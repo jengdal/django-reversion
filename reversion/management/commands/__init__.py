@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 from django.apps import apps
 from django.contrib import admin
 from django.core.management.base import BaseCommand, CommandError
+from django.conf import settings
 from reversion.revisions import is_registered
 
 
@@ -27,8 +28,9 @@ class BaseRevisionCommand(BaseCommand):
         )
 
     def get_models(self, options):
-        # Load admin classes.
-        admin.autodiscover()
+        # Load admin classes if the admin is enabled.
+        if 'django.contrib.admin' in settings.INSTALLED_APPS:
+            admin.autodiscover()
         # Get options.
         app_labels = options["app_label"]
         # Parse model classes.
